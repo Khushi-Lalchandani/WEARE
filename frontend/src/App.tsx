@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import Header from './components/Header'
+import AdminHeader from './components/AdminHeader'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import Cart from './pages/Cart'
@@ -15,6 +16,7 @@ import Profile from './pages/Profile'
 import OrderDetails from './pages/OrderDetails'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
+import AdminLogin from './pages/admin/AdminLogin'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import OrderList from './pages/admin/OrderList'
 import ProductList from './pages/admin/ProductList'
@@ -26,12 +28,15 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('Men')
   const location = useLocation()
   const isProfilePage = location.pathname === '/profile'
+  const isAdminRoute = location.pathname.startsWith('/admin')
 
   return (
-    <div className={`h-screen w-[100%] overflow-y-auto scrollbar-hide`}>
-      {!isProfilePage && <Header selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />}
+    <div className={`h-screen w-[100%] overflow-y-auto scrollbar-hide ${isAdminRoute ? 'bg-gray-100' : ''}`}>
+      {(!isProfilePage && !isAdminRoute) && <Header selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />}
+      {(isAdminRoute && location.pathname !== '/admin') && <AdminHeader />}
       <Routes>
         {/* Public Routes */}
+        <Route path="/admin" element={<AdminLogin />} />
         <Route path="/" element={<Home selectedCategory={selectedCategory} />} />
         <Route path="/search" element={<Search />} />
         <Route path="/product/:id" element={<ProductDetails />} />
